@@ -1,34 +1,37 @@
 import streamlit as st
-import cv2
 import numpy as np
+import cv2
 from PIL import Image
 from skimage.metrics import structural_similarity as ssim
 
+# Set the title of the app
 st.title("🧾 Fake Currency Detection System")
 
-# Step 1: Upload an image
-uploaded_file = st.file_uploader("Upload a currency image", type=["jpg", "png", "jpeg"])
+# File uploader allows user to upload images
+uploaded_file = st.file_uploader("Upload a currency image", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
-    image = Image.open(uploaded_file).convert("RGB")
-    image_np = np.array(image)
+    # Convert the file to an opencv image.
+    file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
+    image = cv2.imdecode(file_bytes, 1)
+    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-    st.image(image, caption="Uploaded Image", use_column_width=True)
+    # Display the uploaded image
+    st.image(image_rgb, caption='Uploaded Image', use_column_width=True)
 
-    # Optional: Save or process image
-    # e.g., cv2.imwrite("input.jpg", cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR))
+    # Placeholder for processing logic
+    st.write("Processing the image...")
 
-    st.write("Analyzing image...")
+    # Example: Convert to grayscale
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    # --- Insert processing code from controller.ipynb ---
-    # For example, call your functions to:
-    # - extract features
-    # - compare with reference
-    # - calculate SSIM
-    # - output results
+    # Example: Load a reference image and convert to grayscale
+    # reference_image = cv2.imread('reference.jpg', cv2.IMREAD_GRAYSCALE)
 
-    # Dummy result:
-    st.success("9/10 features matched. Currency likely genuine.")
+    # Example: Compute SSIM between the uploaded image and reference
+    # ssim_score = ssim(gray_image, reference_image)
 
-    # Optional: display individual feature comparisons
-    st.image(image_np, caption="Feature X", width=200)
+    # Display the result
+    # st.write(f"SSIM Score: {ssim_score}")
+
+    # Note: Replace the above placeholders with your actual processing logic
